@@ -1,280 +1,278 @@
-# 
+###### 
 
-# \# 🚀 Jenkins EC2 Provisioning using AWS CLI (IAM Role)
+###### \# 🚀 Jenkins EC2 Provisioning using AWS CLI (IAM Role)
 
-# 
+###### 
 
-# This repository demonstrates how to \*\*provision an Amazon EC2 instance using Jenkins and AWS CLI\*\*, without using Terraform or CloudFormation.
+###### This repository demonstrates how to \*\*provision an Amazon EC2 instance using Jenkins and AWS CLI\*\*, without using Terraform or CloudFormation.
 
-# 
+###### 
 
-# The setup follows \*\*AWS best practices\*\* by using an \*\*IAM Role attached to the Jenkins EC2 instance\*\*, eliminating the need for hardcoded AWS credentials.
+###### The setup follows \*\*AWS best practices\*\* by using an \*\*IAM Role attached to the Jenkins EC2 instance\*\*, eliminating the need for hardcoded AWS credentials.
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## 🧠 High-Level Workflow
+###### \## 🧠 High-Level Workflow
 
-# 
+###### 
 
-# ```
+###### ```
 
-# Git Repository
+###### Git Repository
 
-# &nbsp;    ↓
+######      ↓
 
-# Jenkins Pipeline
+###### Jenkins Pipeline
 
-# &nbsp;    ↓
+######      ↓
 
-# AWS CLI (IAM Role Authentication)
+###### AWS CLI (IAM Role Authentication)
 
-# &nbsp;    ↓
+######      ↓
 
-# Amazon EC2 Instance
+###### Amazon EC2 Instance
 
-# ```
+###### ```
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## 📁 Repository Structure
+###### \## 📁 Repository Structure
 
-# 
+###### 
 
-# ```
+###### ```
 
-# .
+###### .
 
-# ├── Jenkinsfile
+###### ├── Jenkinsfile
 
-# ├── scripts/
+###### ├── scripts/
 
-# │   └── create-ec2.sh
+###### │   └── create-ec2.sh
 
-# └── README.md
+###### └── README.md
 
-# ```
+###### ```
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## 🔐 Prerequisites
+###### \## 🔐 Prerequisites
 
-# 
+###### 
 
-# \### Jenkins EC2 IAM Role (Required)
+###### \### Jenkins EC2 IAM Role (Required)
 
-# 
+###### 
 
-# Attach an IAM role to the Jenkins EC2 instance with the following permissions:
+###### Attach an IAM role to the Jenkins EC2 instance with the following permissions:
 
-# 
+###### 
 
-# ```json
+###### ```json
 
-# {
+###### {
 
-# &nbsp; "Version": "2012-10-17",
+######   "Version": "2012-10-17",
 
-# &nbsp; "Statement": \[
+######   "Statement": \[
 
-# &nbsp;   {
+######     {
 
-# &nbsp;     "Effect": "Allow",
+######       "Effect": "Allow",
 
-# &nbsp;     "Action": \[
+######       "Action": \[
 
-# &nbsp;       "ec2:RunInstances",
+######         "ec2:RunInstances",
 
-# &nbsp;       "ec2:DescribeInstances",
+######         "ec2:DescribeInstances",
 
-# &nbsp;       "ec2:CreateTags",
+######         "ec2:CreateTags",
 
-# &nbsp;       "ec2:DescribeSubnets",
+######         "ec2:DescribeSubnets",
 
-# &nbsp;       "ec2:DescribeSecurityGroups",
+######         "ec2:DescribeSecurityGroups",
 
-# &nbsp;       "ec2:DescribeImages"
+######         "ec2:DescribeImages"
 
-# &nbsp;     ],
+######       ],
 
-# &nbsp;     "Resource": "\*"
+######       "Resource": "\*"
 
-# &nbsp;   }
+######     }
 
-# &nbsp; ]
+######   ]
 
-# }
+###### }
 
-# ```
+###### ```
 
-# 
+###### 
 
-# Verify IAM role access:
+###### Verify IAM role access:
 
-# ```bash
+###### ```bash
 
-# aws sts get-caller-identity
+###### aws sts get-caller-identity
 
-# ```
+###### ```
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## 📜 Jenkins Pipeline
+###### \## 📜 Jenkins Pipeline
 
-# 
+###### 
 
-# ```groovy
+###### ```groovy
 
-# pipeline {
+###### pipeline {
 
-# &nbsp; agent any
+######   agent any
 
-# 
+###### 
 
-# &nbsp; stages {
+######   stages {
 
-# &nbsp;   stage('Checkout') {
+######     stage('Checkout') {
 
-# &nbsp;     steps {
+######       steps {
 
-# &nbsp;       checkout scm
+######         checkout scm
 
-# &nbsp;     }
+######       }
 
-# &nbsp;   }
+######     }
 
-# 
+###### 
 
-# &nbsp;   stage('Verify AWS Access') {
+######     stage('Verify AWS Access') {
 
-# &nbsp;     steps {
+######       steps {
 
-# &nbsp;       sh 'aws sts get-caller-identity'
+######         sh 'aws sts get-caller-identity'
 
-# &nbsp;     }
+######       }
 
-# &nbsp;   }
+######     }
 
-# 
+###### 
 
-# &nbsp;   stage('Provision EC2') {
+######     stage('Provision EC2') {
 
-# &nbsp;     steps {
+######       steps {
 
-# &nbsp;       sh '''
+######         sh '''
 
-# &nbsp;         chmod +x scripts/create-ec2.sh
+######           chmod +x scripts/create-ec2.sh
 
-# &nbsp;         ./scripts/create-ec2.sh
+######           ./scripts/create-ec2.sh
 
-# &nbsp;       '''
+######         '''
 
-# &nbsp;     }
+######       }
 
-# &nbsp;   }
+######     }
 
-# &nbsp; }
+######   }
 
-# }
+###### }
 
-# ```
+###### ```
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## 🧾 EC2 Provisioning Script
+###### \## 🧾 EC2 Provisioning Script
 
-# 
+###### 
 
-# ```bash
+###### ```bash
 
-# \#!/bin/bash
+###### \#!/bin/bash
 
-# set -e
+###### set -e
 
-# 
+###### 
 
-# REGION="ap-south-1"
+###### REGION="ap-south-1"
 
-# AMI\_ID="ami-xxxxxxxx"
+###### AMI\_ID="ami-xxxxxxxx"
 
-# INSTANCE\_TYPE="t3.micro"
+###### INSTANCE\_TYPE="t3.micro"
 
-# KEY\_NAME="my-keypair"
+###### KEY\_NAME="my-keypair"
 
-# SUBNET\_ID="subnet-xxxx"
+###### SUBNET\_ID="subnet-xxxx"
 
-# SECURITY\_GROUP\_ID="sg-xxxx"
+###### SECURITY\_GROUP\_ID="sg-xxxx"
 
-# 
+###### 
 
-# aws ec2 run-instances \\
+###### aws ec2 run-instances \\
 
-# &nbsp; --region $REGION \\
+######   --region $REGION \\
 
-# &nbsp; --image-id $AMI\_ID \\
+######   --image-id $AMI\_ID \\
 
-# &nbsp; --instance-type $INSTANCE\_TYPE \\
+######   --instance-type $INSTANCE\_TYPE \\
 
-# &nbsp; --count 1 \\
+######   --count 1 \\
 
-# &nbsp; --key-name $KEY\_NAME \\
+######   --key-name $KEY\_NAME \\
 
-# &nbsp; --subnet-id $SUBNET\_ID \\
+######   --subnet-id $SUBNET\_ID \\
 
-# &nbsp; --security-group-ids $SECURITY\_GROUP\_ID \\
+######   --security-group-ids $SECURITY\_GROUP\_ID \\
 
-# &nbsp; --tag-specifications 'ResourceType=instance,Tags=\[{Key=Name,Value=jenkins-awscli-ec2}]'
+######   --tag-specifications 'ResourceType=instance,Tags=\[{Key=Name,Value=jenkins-awscli-ec2}]'
 
-# ```
+###### ```
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## ▶️ How to Run
+###### \## ▶️ How to Run
 
-# 
+###### 
 
-# 1\. Push this repository to GitHub
+###### 1\. Push this repository to GitHub
 
-# 2\. Create a Jenkins Pipeline job
+###### 2\. Create a Jenkins Pipeline job
 
-# 3\. Select \*\*Pipeline from SCM\*\*
+###### 3\. Select \*\*Pipeline from SCM\*\*
 
-# 4\. Run the pipeline
+###### 4\. Run the pipeline
 
-# 
+###### 
 
-# ---
+###### ---
 
-# 
+###### 
 
-# \## 🏁 Summary
+###### \## 🏁 Summary
 
-# 
+###### 
 
-# A simple, secure, IAM-role-based Jenkins pipeline to provision EC2 using AWS CLI.
-
-
+###### A simple, secure, IAM-role-based Jenkins pipeline to provision EC2 using AWS CLI.
 
