@@ -137,3 +137,21 @@ aws ec2 run-instances \
 ## 🏁 Summary
 
 A simple, secure, IAM-role-based Jenkins pipeline to provision EC2 using AWS CLI.
+
+----
+
+## 🎥 Learn With YouTube Tutorials
+
+Each project is **explained step-by-step** on YouTube with visuals and walkthroughs:
+
+🔗 [📺 Bishtify - Build Skills, Not Just Resumes](https://www.youtube.com/@getbishtified) 
+🧠 Subscribe for weekly ML + CloudOps demos.
+
+---
+
+📩 **Contact:**  
+📧 `support@bishtify.com`
+
+🤝 Connect With Me - 📧 [Click here](https://topmate.io/pradeep_singh_bisht)
+🔗 Get Bishtified with:
+Bishtify - Let’s build skills — not just resumes! 🚀
